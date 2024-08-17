@@ -180,8 +180,14 @@ class TimeStamp(datetime):
         elif isinstance(other, (tuple, list)):
             temp_datetime = datetime.fromtimestamp(self.timestamp())
             return type(self)(datetime_delta(temp_datetime, other[0], other[1]))
+        elif isinstance(other, dict):
+            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            for k in list(other):
+                temp_datetime = datetime_delta(temp_datetime, k, other[k])
+            return type(self)(temp_datetime)
         elif isinstance(other, TimeStamp):
-            return self.timestamp() + other.timestamp()
+            unix_timestamp = self.timestamp() + other.timestamp()
+            return type(self)(unix_timestamp)
         elif isinstance(other, timedelta):
             return type(self)(super().__add__(other))
         else:
@@ -194,8 +200,14 @@ class TimeStamp(datetime):
         elif isinstance(other, (tuple, list)):
             temp_datetime = datetime.fromtimestamp(self.timestamp())
             return type(self)(datetime_delta(temp_datetime, other[0], -1 * other[1]))
+        elif isinstance(other, dict):
+            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            for k in list(other):
+                temp_datetime = datetime_delta(temp_datetime, k, -1 * other[k])
+            return type(self)(temp_datetime)
         elif isinstance(other, TimeStamp):
-            return self.timestamp() - other.timestamp()
+            unix_timestamp = self.timestamp() - other.timestamp()
+            return type(self)(unix_timestamp)
         elif isinstance(other, timedelta):
             return type(self)(super().__sub__(other))
         else:
@@ -362,8 +374,10 @@ class TimeLine(object):
 
 if __name__ == "__main__":
     t = TimeStamp(datetime.now())
-    print(t["week"])
-    print(t.sec("week"))
-    tll = TimeStamp.timestamp_range("2024-1-1", "2024-8-1", "hour", 1)
-    tl = TimeLine(tll)
-    print(tl.get_time_slice("day", 1))
+    t -= {"year": 3, "month": 5, "week":2}
+    print(t)
+    # print(t["week"])
+    # print(t.sec("week"))
+    # tll = TimeStamp.timestamp_range("2024-1-1", "2024-8-1", "hour", 1)
+    # tl = TimeLine(tll)
+    # print(tl.get_time_slice("day", 1))
