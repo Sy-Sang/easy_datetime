@@ -374,7 +374,7 @@ class TimeLine(object):
 
 if __name__ == "__main__":
     t = TimeStamp(datetime.now())
-    t -= {"year": 3, "month": 5, "week":2}
+    t -= {"year": 3, "month": 5, "week": 2}
     print(t)
     # print(t["week"])
     # print(t.sec("week"))
