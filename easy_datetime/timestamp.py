@@ -22,6 +22,23 @@ import numpy
 
 # 代码块
 
+def timer(func):
+    """
+    函数计时器
+    :param func:
+    :return:
+    """
+
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        print(f"{func.__name__} took {end_time - start_time} seconds to execute")
+        return result
+
+    return wrapper
+
+
 def datetime_delta(d0: datetime, delta_key: str, delta: int) -> datetime:
     """
     通过字符串进行日期加减
