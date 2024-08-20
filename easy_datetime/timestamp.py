@@ -3,6 +3,13 @@
 
 __author__ = "Sy,Sang"
 __version__ = ""
+__license__ = ""
+__maintainer__ = "Sy, Sang"
+__email__ = "martin9le@163.com"
+__status__ = "Development"
+__credits__ = []
+__date__ = ""
+__copyright__ = ""
 
 # 系统模块
 import copy
