@@ -319,14 +319,15 @@ class TimeStamp(datetime):
         t1 = last if isinstance(last, TimeStamp) else TimeStamp(last)
         t = t0
         range_list = []
-        while t <= t1:
-            range_list.append(t)
-            t += (temporal_expression, delta)
 
-        if not include_last and t1 in range_list:
-            range_list.remove(t1)
-        else:
-            pass
+        while True:
+            if t < t1:
+                range_list.append(t)
+            elif t == t1 and include_last is True:
+                range_list.append(t)
+            else:
+                break
+            t += (temporal_expression, delta)
 
         return range_list
 
