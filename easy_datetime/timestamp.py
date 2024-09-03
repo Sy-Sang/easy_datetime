@@ -80,7 +80,7 @@ def init(*args, **kwargs) -> list:
         "S": 5,
         "MS": 6
     }
-    init_date_int_list = []
+    init_date_int_list = [1, 1, 1, 0, 0, 0, 0]
     if len(args) == 0:
         init_date_int_list = [datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour,
                               datetime.now().minute, datetime.now().second, datetime.now().microsecond]
@@ -90,11 +90,13 @@ def init(*args, **kwargs) -> list:
             init_date_int_list = [args[0].year, args[0].month, args[0].day, args[0].hour, args[0].minute,
                                   args[0].second, args[0].microsecond]
         elif isinstance(arg, str):
-            init_date_int_list = [int(i) for i in re.findall(r'\d+', args[0])]
-            if len(init_date_int_list) < 7:
-                init_date_int_list += [1] * (7 - len(init_date_int_list))
-            else:
-                pass
+            int_list = [int(i) for i in re.findall(r'\d+', args[0])]
+            for i, ti in enumerate(int_list):
+                init_date_int_list[i] = ti
+            # if len(init_date_int_list) < 7:
+            #     init_date_int_list += [1] * (7 - len(init_date_int_list))
+            # else:
+            #     pass
         elif isinstance(arg, (int, float, decimal.Decimal)):
             if arg >= 31507200:
                 temp_dt = datetime.fromtimestamp(args[0])
@@ -132,11 +134,14 @@ def init(*args, **kwargs) -> list:
         else:
             init_date_int_list = [int(args[0]), int(args[1]), 1, 0, 0, 0, 0]
     else:
-        init_date_int_list = [int(i) for i in args]
-        if len(args) < 7:
-            init_date_int_list += [1] * (7 - len(args))
-        else:
-            pass
+        # init_date_int_list = [int(i) for i in args]
+        # if len(args) < 7:
+        #     init_date_int_list += [1] * (7 - len(args))
+        # else:
+        #     pass
+        int_list = [int(i) for i in args]
+        for i, ti in enumerate(int_list):
+            init_date_int_list[i] = ti
 
     for i in kwargs.items():
         init_date_int_list[kdic[i[0]]] = i[1]
@@ -297,33 +302,36 @@ class TimeStamp(datetime):
         :return:
         """
         date = self.get_date() - ["day", self.weekday()]
-        return [date + ["day", i] for i in range(7)]
+        days = [date + ["day", i] for i in range(7)]
+        return [type(self)(i.year, i.month, i.day) for i in days]
 
     def days_in_month(self) -> list[Self]:
         """
         获取同一月的所有日
         :return:
         """
-        return self.__class__.timestamp_range(
+        days = self.__class__.timestamp_range(
             TimeStamp(self.year, self.month, 1),
             TimeStamp(self.year, self.month, 1) + ["month", 1],
             "day",
             1,
             False
         )
+        return [type(self)(i.year, i.month, i.day) for i in days]
 
     def days_in_year(self) -> list[Self]:
         """
         获取同一年的所有日
         :return:
         """
-        return self.__class__.timestamp_range(
+        days = self.__class__.timestamp_range(
             TimeStamp(self.year, self.month, 1),
             TimeStamp(self.year, self.month, 1) + ["year", 1],
             "day",
             1,
             False
         )
+        return [type(self)(i.year, i.month, i.day) for i in days]
 
     @classmethod
     def timestamp_range(
