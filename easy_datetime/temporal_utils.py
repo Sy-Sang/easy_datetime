@@ -42,7 +42,10 @@ def timer(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         end_time = time.time()
-        print(f"{func.__name__} took {end_time - start_time} seconds to execute")
+        if "timer" in kwargs.keys() and kwargs["timer"] is True:
+            print(f"{func.__name__} took {end_time - start_time} seconds to execute")
+        else:
+            pass
         return result
 
     return wrapper
