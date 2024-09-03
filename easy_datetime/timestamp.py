@@ -69,32 +69,45 @@ def datetime_delta(d0: datetime, delta_key: str, delta: int) -> datetime:
     return d0
 
 
-class TimeStamp(datetime):
-    """
-    时间戳类
-    """
-
-    def __new__(cls, *args, **kwargs):
-        if not args:
-            init_date_int_list = [datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour,
-                                  datetime.now().minute, datetime.now().second, datetime.now().microsecond]
-
-        elif isinstance(args[0], datetime):
+def init(*args, **kwargs) -> list:
+    """初始化时间列表"""
+    kdic = {
+        "y": 0,
+        "m": 1,
+        "d": 2,
+        "H": 3,
+        "M": 4,
+        "S": 5,
+        "MS": 6
+    }
+    init_date_int_list = []
+    if len(args) == 0:
+        init_date_int_list = [datetime.now().year, datetime.now().month, datetime.now().day, datetime.now().hour,
+                              datetime.now().minute, datetime.now().second, datetime.now().microsecond]
+    elif len(args) == 1:
+        arg = args[0]
+        if isinstance(arg, datetime):
             init_date_int_list = [args[0].year, args[0].month, args[0].day, args[0].hour, args[0].minute,
                                   args[0].second, args[0].microsecond]
-        elif isinstance(args[0], str):
+        elif isinstance(arg, str):
             init_date_int_list = [int(i) for i in re.findall(r'\d+', args[0])]
-            if len(init_date_int_list) < 3:
-                init_date_int_list += [1] * (3 - len(init_date_int_list))
+            if len(init_date_int_list) < 7:
+                init_date_int_list += [1] * (7 - len(init_date_int_list))
             else:
                 pass
-
-        elif isinstance(args[0], (int, float, decimal.Decimal)) and args[0] >= 31507200:
-            temp_dt = datetime.fromtimestamp(args[0])
+        elif isinstance(arg, (int, float, decimal.Decimal)):
+            if arg >= 31507200:
+                temp_dt = datetime.fromtimestamp(args[0])
+                init_date_int_list = [temp_dt.year, temp_dt.month, temp_dt.day, temp_dt.hour, temp_dt.minute,
+                                      temp_dt.second, temp_dt.microsecond]
+            else:
+                init_date_int_list = [int(arg), 1, 1, 0, 0, 0, 0]
+        elif isinstance(arg, bytes):
+            temp_dt = datetime(args[0])
             init_date_int_list = [temp_dt.year, temp_dt.month, temp_dt.day, temp_dt.hour, temp_dt.minute,
                                   temp_dt.second, temp_dt.microsecond]
-
-        elif isinstance(args[0], int) and isinstance(args[1], str):
+    elif len(args) == 2:
+        if isinstance(args[0], int) and isinstance(args[1], str):
             num_str = str(args[0])
             str_list = ["", "", "", "", "", ""]
             for i, s in enumerate(args[1]):
@@ -116,20 +129,29 @@ class TimeStamp(datetime):
             temp_dt = datetime(*date_num_list)
             init_date_int_list = [temp_dt.year, temp_dt.month, temp_dt.day, temp_dt.hour, temp_dt.minute,
                                   temp_dt.second, temp_dt.microsecond]
-
-        elif isinstance(args[0], bytes):
-            temp_dt = datetime(args[0])
-            init_date_int_list = [temp_dt.year, temp_dt.month, temp_dt.day, temp_dt.hour, temp_dt.minute,
-                                  temp_dt.second, temp_dt.microsecond]
-
         else:
-            init_date_int_list = [int(i) for i in args]
-            if len(args) < 3:
-                init_date_int_list += [1] * (3 - len(args))
-            else:
-                pass
+            init_date_int_list = [int(args[0]), int(args[1]), 1, 0, 0, 0, 0]
+    else:
+        init_date_int_list = [int(i) for i in args]
+        if len(args) < 7:
+            init_date_int_list += [1] * (7 - len(args))
+        else:
+            pass
 
-        return super().__new__(cls, *init_date_int_list)
+    for i in kwargs.items():
+        init_date_int_list[kdic[i[0]]] = i[1]
+
+    return init_date_int_list
+
+
+class TimeStamp(datetime):
+    """
+    时间戳类
+    """
+
+    def __new__(cls, *args, **kwargs):
+        init_list = init(*args, **kwargs)
+        return super().__new__(cls, *init_list)
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -143,7 +165,9 @@ class TimeStamp(datetime):
             "microsec": self.microsecond
         }
         self.map = copy.deepcopy(self.core)
-        self.map["week"] = self.weekday()
+        self.map["weekday"] = self.weekday()
+        self.map["week"] = int((self.timestamp() - datetime(self.year, 1, 1).timestamp()) / (7 * 86400))
+        self.map["month_week"] = int((self.timestamp() - datetime(self.year, self.month, 1).timestamp()) / (7 * 86400))
 
     @classmethod
     def now(cls, tz=...) -> Self:
@@ -168,6 +192,10 @@ class TimeStamp(datetime):
         """
         ds = self.get_date_string().split("-")
         return f"{ds[0]}年{ds[1]}月{ds[2]}日"
+
+    def get_chinese_datetime_str(self) -> str:
+        """获取中文时间全文"""
+        return f"{self.year}年{self.month}月{self.day}日{self.hour}点{self.minute}分{self.second}秒"
 
     def get_time_string(self) -> str:
         """
