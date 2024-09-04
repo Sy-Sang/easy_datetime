@@ -1,3 +1,8 @@
+# Easy Datetime
+
+## This is a simple and easy-to-use time class inherited from datetime.datetime
+
+
 ```python
 from easy_datetime.timestamp import TimeStamp,TimeLine
 ```
