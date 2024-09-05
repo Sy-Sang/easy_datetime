@@ -93,10 +93,6 @@ def init(*args, **kwargs) -> list:
             int_list = [int(i) for i in re.findall(r'\d+', args[0])]
             for i, ti in enumerate(int_list):
                 init_date_int_list[i] = ti
-            # if len(init_date_int_list) < 7:
-            #     init_date_int_list += [1] * (7 - len(init_date_int_list))
-            # else:
-            #     pass
         elif isinstance(arg, (int, float, decimal.Decimal)):
             if arg >= 31507200:
                 temp_dt = datetime.fromtimestamp(args[0])
@@ -134,11 +130,6 @@ def init(*args, **kwargs) -> list:
         else:
             init_date_int_list = [int(args[0]), int(args[1]), 1, 0, 0, 0, 0]
     else:
-        # init_date_int_list = [int(i) for i in args]
-        # if len(args) < 7:
-        #     init_date_int_list += [1] * (7 - len(args))
-        # else:
-        #     pass
         int_list = [int(i) for i in args]
         for i, ti in enumerate(int_list):
             init_date_int_list[i] = ti
@@ -392,7 +383,10 @@ class TimeLine(object):
         return copy.deepcopy(self.data)
 
     def __str__(self):
-        return str([str(i) for i in self.data])
+        return str(self.data)
+
+    def __repr__(self):
+        return self.__str__()
 
     def timestamp(self) -> list[float]:
         """
