@@ -431,7 +431,7 @@ if __name__ == "__main__":
     t = TimeStamp(datetime.now())
     t -= {"year": 3, "month": 5, "week": 2}
     print(t)
-    print(datetime.now())
+    print(datetime.now().timestamp())
     # print(t["week"])
     # print(t.sec("week"))
     # tll = TimeStamp.timestamp_range("2024-1-1", "2024-8-1", "hour", 1)
