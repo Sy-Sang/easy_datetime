@@ -207,6 +207,10 @@ class TimeStamp(datetime):
         """
         return type(self)(self.year, self.month, self.day)
 
+    def get_date_with_last_sec(self) -> Self:
+        """获取当天最后时刻"""
+        return type(self)(self.year, self.month, self.day, 23, 59, 59)
+
     def __getitem__(self, item) -> Union[int, Self, datetime]:
         if isinstance(item, str):
             return self.map[item]
