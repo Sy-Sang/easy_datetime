@@ -246,7 +246,7 @@ class TimeStamp(datetime):
             temp_datetime = datetime.fromtimestamp(self.timestamp())
             return temp_datetime + other
 
-    def __sub__(self, other) -> Union[Self]:
+    def __sub__(self, other) -> Union[Self, int]:
         if isinstance(other, (int, float)):
             return type(self)(self.timestamp() - other)
         elif isinstance(other, (tuple, list)):
@@ -259,7 +259,7 @@ class TimeStamp(datetime):
             return type(self)(temp_datetime)
         elif isinstance(other, TimeStamp):
             unix_timestamp = self.timestamp() - other.timestamp()
-            return type(self)(unix_timestamp)
+            return unix_timestamp
         elif isinstance(other, timedelta):
             return type(self)(super().__sub__(other))
         else:
