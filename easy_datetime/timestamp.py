@@ -272,14 +272,15 @@ class TimeStamp(datetime):
         :return:
         """
         len_dic = dict({})
-        for plus_unit in ["year", "month"]:
-            diff_sec = (self + [plus_unit, 1]).timestamp() - self.timestamp()
-            len_dic[plus_unit] = diff_sec
+
+        len_dic["year"] = (TimeStamp(self.year, 1, 1) + ["year", 1]).timestamp() - TimeStamp(self.year, 1,
+                                                                                             1).timestamp()
+        len_dic["month"] = TimeStamp(self.year, self.month, 1).timestamp() - TimeStamp(self.year, self.month,
+                                                                                       1).timestamp()
         len_dic["week"] = 86400 * 7
         len_dic["day"] = 86400
         len_dic["hour"] = 3600
-        len_dic["sec"] = 60
-        len_dic["sec"] = 1
+        len_dic["min"] = 60
         len_dic["sec"] = 1
         len_dic["microsec"] = 1 / 1000000
 
