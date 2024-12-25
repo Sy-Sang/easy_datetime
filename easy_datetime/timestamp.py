@@ -266,6 +266,23 @@ class TimeStamp(datetime):
             temp_datetime = datetime.fromtimestamp(self.timestamp())
             return temp_datetime - other
 
+    def accurate_to(self, temporal:str) -> Self:
+        temporal_map = {
+            "year": (self.year),
+            "month": (self.year, self.month),
+            "day": (self.year, self.month, self.day),
+            "hour": (self.year, self.month, self.day, self.hour),
+            "min": (self.year, self.month, self.day, self.hour, self.minute),
+            "sec": (self.year, self.month, self.day, self.hour, self.minute, self.second),
+            "ms": (self.year, self.month, self.day, self.hour, self.minute, self.second, self.microsecond)
+        }
+        if temporal not in temporal_map:
+            return copy.deepcopy(self)
+        else:
+            return type(self)(*temporal_map[temporal])
+
+
+
     def sec(self, *args) -> Union[dict, int, list]:
         """
         获取时间戳各节点的秒数
