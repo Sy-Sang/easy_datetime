@@ -266,7 +266,7 @@ class TimeStamp(datetime):
             temp_datetime = datetime.fromtimestamp(self.timestamp())
             return temp_datetime - other
 
-    def accurate_to(self, temporal:str) -> Self:
+    def accurate_to(self, temporal: str) -> Self:
         temporal_map = {
             "year": (self.year),
             "month": (self.year, self.month),
@@ -280,8 +280,6 @@ class TimeStamp(datetime):
             return copy.deepcopy(self)
         else:
             return type(self)(*temporal_map[temporal])
-
-
 
     def sec(self, *args) -> Union[dict, int, list]:
         """
