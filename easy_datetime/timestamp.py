@@ -344,6 +344,14 @@ class TimeStamp(datetime):
         )
         return [type(self)(i.year, i.month, i.day) for i in days]
 
+    def last_day_in_month(self) -> int:
+        """月内最后一天"""
+        return self.days_in_month()[-1].day
+
+    def last_day_in_year(self) -> int:
+        """年内最后一天"""
+        return self.days_in_year()[-1].day
+
     @classmethod
     def timestamp_range(
             cls,
