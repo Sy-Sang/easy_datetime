@@ -267,9 +267,10 @@ class TimeStamp(datetime):
             return temp_datetime - other
 
     def accurate_to(self, temporal: str) -> Self:
+        """精确到"""
         temporal_map = {
-            "year": (self.year),
-            "month": (self.year, self.month),
+            "year": (self.year, 1, 1),
+            "month": (self.year, self.month, 1),
             "day": (self.year, self.month, self.day),
             "hour": (self.year, self.month, self.day, self.hour),
             "min": (self.year, self.month, self.day, self.hour, self.minute),
