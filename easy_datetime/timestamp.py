@@ -387,6 +387,10 @@ class TimeStamp(datetime):
 
         return range_list
 
+    @classmethod
+    def as_timeline(cls, args):
+        return [cls(i) for i in args]
+
 
 class TimeLine(object):
     """
