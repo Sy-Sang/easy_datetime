@@ -389,7 +389,7 @@ class TimeStamp(datetime):
 
     @classmethod
     def as_timeline(cls, args):
-        return [cls(i) for i in args]
+        return [cls(int(i)) for i in args]
 
 
 class TimeLine(object):
