@@ -17,6 +17,7 @@ import re
 import time
 from datetime import datetime
 from datetime import timedelta
+from datetime import timezone
 from dateutil.relativedelta import relativedelta
 import decimal
 from typing import Union, Self
@@ -95,7 +96,7 @@ def init(*args, **kwargs) -> list:
                 init_date_int_list[i] = ti
         elif isinstance(arg, (int, float, decimal.Decimal)):
             if arg >= 31507200:
-                temp_dt = datetime.fromtimestamp(args[0])
+                temp_dt = datetime.fromtimestamp(args[0], tz=timezone(timedelta(hours=8)))
                 init_date_int_list = [temp_dt.year, temp_dt.month, temp_dt.day, temp_dt.hour, temp_dt.minute,
                                       temp_dt.second, temp_dt.microsecond]
             else:
@@ -147,7 +148,7 @@ class TimeStamp(datetime):
 
     def __new__(cls, *args, **kwargs):
         init_list = init(*args, **kwargs)
-        return super().__new__(cls, *init_list)
+        return super().__new__(cls, *init_list, tzinfo=timezone(timedelta(hours=8)))
 
     def __init__(self, *args, **kwargs):
         super().__init__()
@@ -230,10 +231,10 @@ class TimeStamp(datetime):
         if isinstance(other, (int, float)):
             return type(self)(self.timestamp() + other)
         elif isinstance(other, (tuple, list)):
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             return type(self)(datetime_delta(temp_datetime, other[0], other[1]))
         elif isinstance(other, dict):
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             for k in list(other):
                 temp_datetime = datetime_delta(temp_datetime, k, other[k])
             return type(self)(temp_datetime)
@@ -243,17 +244,17 @@ class TimeStamp(datetime):
         elif isinstance(other, timedelta):
             return type(self)(super().__add__(other))
         else:
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             return temp_datetime + other
 
     def __sub__(self, other) -> Union[Self, int]:
         if isinstance(other, (int, float)):
             return type(self)(self.timestamp() - other)
         elif isinstance(other, (tuple, list)):
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             return type(self)(datetime_delta(temp_datetime, other[0], -1 * other[1]))
         elif isinstance(other, dict):
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             for k in list(other):
                 temp_datetime = datetime_delta(temp_datetime, k, -1 * other[k])
             return type(self)(temp_datetime)
@@ -263,7 +264,7 @@ class TimeStamp(datetime):
         elif isinstance(other, timedelta):
             return type(self)(super().__sub__(other))
         else:
-            temp_datetime = datetime.fromtimestamp(self.timestamp())
+            temp_datetime = datetime.fromtimestamp(self.timestamp(), tz=timezone(timedelta(hours=8)))
             return temp_datetime - other
 
     def accurate_to(self, temporal: str) -> Self:
